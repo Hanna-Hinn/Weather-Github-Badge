@@ -1,0 +1,45 @@
+name: Update Weather Badge
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Runs once a day at midnight UTC
+  workflow_dispatch:
+    inputs:
+      city:
+        description: "City name to fetch the weather for"
+        required: true
+        default: "Ramallah"
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      # Set the CITY environment variable. On manual dispatch, use the input; on schedule, use a default.
+      - name: Set City
+        run: echo "CITY=${{ github.event.inputs.city || 'Ramallah' }}" >> $GITHUB_ENV
+
+      - name: Generate weather JSON
+        env:
+          RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
+          CITY: ${{ env.CITY }}
+        run: python generate_weather_badge.py
+
+      - name: Commit and push to gh-pages
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git checkout -B gh-pages
+          git add weather.json
+          git commit -m "Update weather data for ${{ env.CITY }}"
+          git push origin gh-pages --force
