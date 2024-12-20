@@ -9,6 +9,8 @@ on:
         description: "City name to fetch the weather for"
         required: true
         default: "Ramallah"
+permissions:
+  contents: write
 
 jobs:
   Run:
