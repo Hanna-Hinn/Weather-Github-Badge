@@ -11,7 +11,7 @@ on:
         default: "Ramallah"
 
 jobs:
-  build:
+  Run:
     runs-on: self-hosted
     steps:
       - name: Checkout Repository
