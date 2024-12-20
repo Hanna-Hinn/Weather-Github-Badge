@@ -29,11 +29,11 @@ jobs:
       - name: Set City
         run: echo "CITY=${{ github.event.inputs.city || 'Ramallah' }}" >> $GITHUB_ENV
 
-      - name: Generate weather JSON
+        - name: Generate weather JSON
+        run: python scripts/generate_weather_badge.py
         env:
           RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
-          CITY: ${{ env.CITY }}
-        run: python generate_weather_badge.py
+          CITY: ${{ env.CITY }}      
 
       - name: Commit and push to gh-pages
         run: |
